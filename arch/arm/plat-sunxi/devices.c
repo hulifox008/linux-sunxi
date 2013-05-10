@@ -39,30 +39,81 @@
 #include <mach/hardware.h>
 #include <plat/i2c.h>
 
-#if 0
-/* uart */
-static struct plat_serial8250_port debug_uart_platform_data[] = {
-	{
-		.membase	= (void __iomem *)SW_VA_UART0_IO_BASE,
-		.mapbase	= (resource_size_t)SW_PA_UART0_IO_BASE,
-		.irq		= SW_INT_IRQNO_UART0,
-		.flags		= UPF_BOOT_AUTOCONF,
-		.type		= UPIO_MEM32,
-		.regshift	= 2,
-		.uartclk	= 24000000,
-	}, {
-		.flags		= 0
-	}
+/* Register base define */
+#define UART_BASE       (0x01C28000)
+#define UART_BASE_OS    (0x400)
+#define UARTx_BASE(x)   (UART_BASE + (x) * UART_BASE_OS)
+
+static struct resource sw_uart_res[8][2] = {
+    {/* uart0 resource */
+        {.start = UARTx_BASE(0),      .end = UARTx_BASE(0) + UART_BASE_OS - 1, .flags = IORESOURCE_MEM}, /*base*/
+        {.start = SW_INT_IRQNO_UART0, .end = SW_INT_IRQNO_UART0,           .flags = IORESOURCE_IRQ}, /*irq */
+    },
+    {/* uart1 resource */
+        {.start = UARTx_BASE(1),      .end = UARTx_BASE(1) + UART_BASE_OS - 1, .flags = IORESOURCE_MEM}, /*base*/
+        {.start = SW_INT_IRQNO_UART1, .end = SW_INT_IRQNO_UART1,           .flags = IORESOURCE_IRQ}, /*irq */
+    },
+    {/* uart2 resource */
+        {.start = UARTx_BASE(2),      .end = UARTx_BASE(2) + UART_BASE_OS - 1, .flags = IORESOURCE_MEM}, /*base*/
+        {.start = SW_INT_IRQNO_UART2, .end = SW_INT_IRQNO_UART2,           .flags = IORESOURCE_IRQ}, /*irq */
+    },
+    {/* uart3 resource */
+        {.start = UARTx_BASE(3),      .end = UARTx_BASE(3) + UART_BASE_OS - 1, .flags = IORESOURCE_MEM}, /*base*/
+        {.start = SW_INT_IRQNO_UART3, .end = SW_INT_IRQNO_UART3,           .flags = IORESOURCE_IRQ}, /*irq */
+    },
+    {/* uart4 resource */
+        {.start = UARTx_BASE(4),      .end = UARTx_BASE(4) + UART_BASE_OS - 1, .flags = IORESOURCE_MEM}, /*base*/
+        {.start = SW_INT_IRQNO_UART4, .end = SW_INT_IRQNO_UART4,           .flags = IORESOURCE_IRQ}, /*irq */
+    },
+    {/* uart5 resource */
+        {.start = UARTx_BASE(5),      .end = UARTx_BASE(5) + UART_BASE_OS - 1, .flags = IORESOURCE_MEM}, /*base*/
+        {.start = SW_INT_IRQNO_UART5, .end = SW_INT_IRQNO_UART5,           .flags = IORESOURCE_IRQ}, /*irq */
+    },
+    {/* uart6 resource */
+        {.start = UARTx_BASE(6),      .end = UARTx_BASE(6) + UART_BASE_OS - 1, .flags = IORESOURCE_MEM}, /*base*/
+        {.start = SW_INT_IRQNO_UART6, .end = SW_INT_IRQNO_UART6,           .flags = IORESOURCE_IRQ}, /*irq */
+    },
+    {/* uart7 resource */
+        {.start = UARTx_BASE(7),      .end = UARTx_BASE(7) + UART_BASE_OS - 1, .flags = IORESOURCE_MEM}, /*base*/
+        {.start = SW_INT_IRQNO_UART7, .end = SW_INT_IRQNO_UART7,           .flags = IORESOURCE_IRQ}, /*irq */
+    },
 };
 
-static struct platform_device debug_uart = {
-	.name = "serial8250",
-	.id = PLAT8250_DEV_PLATFORM,
-	.dev = {
-		.platform_data = debug_uart_platform_data,
-	},
+static struct platform_device sw_uart0_dev = {
+	.name = "sunxi-uart", 
+	.id = 0,
+	.num_resources = ARRAY_SIZE(sw_uart_res[0]),
+	.resource = &sw_uart_res[0][0], 
+	.dev={}
 };
-#endif
+
+/* mmc */
+static struct resource sunximmc_resources[2] = {
+	{ 
+	.start = SW_PA_SDC0_IO_BASE,      
+	.end = SW_PA_SDC0_IO_BASE+0x1000-1,  
+	.flags	= IORESOURCE_MEM
+	},  /* reg resource */
+	
+	{ 
+	.start	= SW_INT_IRQNO_SDMC0,  
+	.end = SW_INT_IRQNO_SDMC0,     
+	.flags	= IORESOURCE_IRQ
+	}  /* irq resource */
+};
+
+static struct platform_device awmmc0_device = {
+	.name = "sunxi-mmc",
+	.id = 0,
+	.num_resources = ARRAY_SIZE(sunximmc_resources),
+	.resource = &sunximmc_resources[0],
+	.dev={}
+};
+
+/* spdif */
+static struct platform_device sun4i_spdif_device = {
+	.name = "sun4i-spdif",
+};
 
 /* dma */
 static struct platform_device sw_pdev_dmac = {
@@ -199,11 +250,10 @@ static struct platform_device sunxi_device_mali_drm = {
 #endif
 
 static struct platform_device *sw_pdevs[] __initdata = {
-#if 0
-	&debug_uart,
-#endif
+	&sw_uart0_dev,
 	&sw_pdev_dmac,
 	&sw_pdev_nand,
+	&awmmc0_device,
 	&sunxi_twi0_device,
 	&sunxi_twi1_device,
 	&sunxi_twi2_device,
