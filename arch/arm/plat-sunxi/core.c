@@ -279,12 +279,6 @@ static int __init reserve_ve_param(char *s)
 early_param("sunxi_ve_mem_reserve", reserve_ve_param);
 #endif
 
-static void reserve_sys(void)
-{
-	memblock_reserve(SYS_CONFIG_MEMBASE, SYS_CONFIG_MEMSIZE);
-	pr_reserve_info("SYS ", SYS_CONFIG_MEMBASE, SYS_CONFIG_MEMSIZE);
-}
-
 #if defined RESERVE_VE_MEM || defined CONFIG_SUN4I_G2D || \
 	defined CONFIG_SUN4I_G2D_MODULE || defined CONFIG_FB_SUNXI_RESERVED_MEM
 static void reserve_mem(unsigned long *start, unsigned long *size,
@@ -311,7 +305,6 @@ static void reserve_mem(unsigned long *start, unsigned long *size,
 static void __init sw_core_reserve(void)
 {
 	pr_info("Memory Reserved:\n");
-	reserve_sys();
 	/* 0 - 64M is used by reserve_sys */
 	reserved_start = meminfo.bank[0].start + SZ_64M;
 	reserved_max   = meminfo.bank[0].start + meminfo.bank[0].size;
