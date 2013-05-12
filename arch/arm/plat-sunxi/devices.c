@@ -110,6 +110,45 @@ static struct platform_device awmmc0_device = {
 	.dev={}
 };
 
+/* wemac */
+static struct resource wemac_resources[] = {
+	[0] = {
+		.start	= SW_PA_EMAC_IO_BASE,
+		.end	= SW_PA_EMAC_IO_BASE+1024,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= SW_PA_SRAM_IO_BASE,
+		.end	= SW_PA_SRAM_IO_BASE+1024,
+		.flags	= IORESOURCE_MEM,
+	},
+	[2] = {
+		.start	= PIO_BASE,
+		.end	= PIO_BASE+1024,
+		.flags	= IORESOURCE_MEM,
+	},
+	[3] = {
+		.start	= SW_PA_CCM_IO_BASE,
+		.end	= SW_PA_CCM_IO_BASE+1024,
+		.flags	= IORESOURCE_MEM,
+	},
+	[4] = {
+		.start	= SW_INT_IRQNO_EMAC,
+		.end	= SW_INT_IRQNO_EMAC,
+		.flags	= IORESOURCE_IRQ,
+	}
+};
+
+static struct platform_device wemac_device = {
+	.name		= "wemac",
+	.id		= 0,
+	.num_resources	= ARRAY_SIZE(wemac_resources),
+	.resource	= wemac_resources,
+	.dev		= {
+	}
+};
+
+
 /* spdif */
 static struct platform_device sun4i_spdif_device = {
 	.name = "sun4i-spdif",
@@ -254,6 +293,7 @@ static struct platform_device *sw_pdevs[] __initdata = {
 	&sw_pdev_dmac,
 	&sw_pdev_nand,
 	&awmmc0_device,
+    &wemac_device,
 	&sunxi_twi0_device,
 	&sunxi_twi1_device,
 	&sunxi_twi2_device,

@@ -29,8 +29,6 @@
 
 /*   registers define  */
 /*  EMAC register  */
-#define EMAC_BASE		0x01C0B000
-
 #define EMAC_CTL_REG             (0x00)
 #define EMAC_TX_MODE_REG         (0x04)
 #define EMAC_TX_FLOW_REG         (0x08)
@@ -128,7 +126,6 @@
 
 
 //CCM register
-#define CCM_BASE           	0x01c20000
 
 #define CCM_AC320_MACC_REG 	(0x00)
 #define CCM_AUDIO_HOSC_REG 	(0x04)

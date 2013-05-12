@@ -59,7 +59,7 @@
  */
 static int watchdog = 5000;
 static unsigned char mac_addr[6] = {0x00};
-static char *mac_addr_param = ":";
+static char *mac_addr_param = "00:11:22:33:44:55";
 module_param(watchdog, int, 0400);
 MODULE_PARM_DESC(watchdog, "transmit timeout in milliseconds");
 
@@ -833,8 +833,6 @@ unsigned int emac_setup(struct net_device *ndev)
 unsigned int wemac_powerup(struct net_device *ndev)
 {
 	wemac_board_info_t *db = netdev_priv(ndev);
-	char emac_mac[13] = {'\0'};
-	int i;
 	unsigned int reg_val;
 
 	/* initial EMAC */
@@ -875,16 +873,6 @@ unsigned int wemac_powerup(struct net_device *ndev)
 
 		for (i = 0; i < 6; i++, p++)
 			mac_addr[i] = simple_strtoul(p, &p, 16);
-	} else if (SCRIPT_PARSER_OK != script_parser_fetch("dynamic", "MAC", (int *)emac_mac, 3)) {
-		printk(KERN_WARNING "emac MAC isn't valid!\n");
-	} else {
-		emac_mac[12] = '\0';
-		for (i = 0; i < 6; i++) {
-			char emac_tmp[3] = ":::";
-			memcpy(emac_tmp, (char *)(emac_mac+i*2), 2);
-			emac_tmp[2] = ':';
-			mac_addr[i] = simple_strtoul(emac_tmp, NULL, 16);
-		}
 	}
 	writel(mac_addr[0]<<16 | mac_addr[1]<<8 | mac_addr[2],
 			db->emac_vbase + EMAC_MAC_A1_REG);
@@ -1076,10 +1064,12 @@ wemac_init_wemac(struct net_device *dev)
 	unsigned int phy_reg;
 	unsigned int reg_val;
 
+/*
 	if (db->mos_pin_handler) {
 		db->mos_gpio->data = 1;
 		gpio_set_one_pin_status(db->mos_pin_handler, db->mos_gpio, "emac_power", 1);
 	}
+*/
 
 	/* PHY POWER UP */
 	phy_reg = wemac_phy_read(dev, 0, 0);
@@ -1620,11 +1610,12 @@ static void wemac_shutdown(struct net_device *dev)
 			reg_val);
 	wemac_phy_write(dev, 0, 0, reg_val | (1<<11));	/* PHY POWER DOWN */
 
+/*
 	if (db->mos_pin_handler) {
 		db->mos_gpio->data = 0;
 		gpio_set_one_pin_status(db->mos_pin_handler, db->mos_gpio, "emac_power", 1);
 	}
-
+*/
 	writel(0, db->emac_vbase + EMAC_INT_CTL_REG);					/* Disable all interrupt */
 	writel(readl(db->emac_vbase + EMAC_INT_STA_REG), db->emac_vbase + EMAC_INT_STA_REG);          /* clear interupt status */
 	writel(readl(db->emac_vbase + EMAC_CTL_REG) & (~(0x7)), db->emac_vbase + EMAC_CTL_REG);	/* Disable RX */
@@ -1792,22 +1783,7 @@ static int __devinit wemac_probe(struct platform_device *pdev)
 	db->mos_pin_handler = 0;
 	if (NULL == db->mos_gpio) {
 		printk(KERN_ERR "can't request memory for mos_gpio\n");
-	} else {
-		script_parser_value_type_t t = SCRIPT_PARSER_VALUE_TYPE_INVALID;
-		if (SCRIPT_PARSER_OK == script_parser_fetch_ex("emac_para", "emac_power",
-					(int *)(db->mos_gpio), &t,
-					sizeof(user_gpio_set_t)/sizeof(int)) &&
-		    t == SCRIPT_PARSER_VALUE_TYPE_GPIO_WORD) {
-			db->mos_pin_handler =
-				sunxi_gpio_request_array(db->mos_gpio, 1);
-			if (0 == db->mos_pin_handler)
-				printk(KERN_ERR "can't request gpio_port %d, port_num %d\n",
-						db->mos_gpio->port, db->mos_gpio->port_num);
-		} else {
-			kfree(db->mos_gpio);
-			db->mos_gpio = NULL;
-		}
-	}
+	} 
 
 	/* ccmu address remap */
 	iosize = res_size(db->ccmu_base_res);
@@ -1983,47 +1959,6 @@ static int __devexit wemac_drv_remove(struct platform_device *pdev)
 	return 0;
 }
 
-static struct resource wemac_resources[] = {
-	[0] = {
-		.start	= EMAC_BASE,
-		.end	= EMAC_BASE+1024,
-		.flags	= IORESOURCE_MEM,
-	},
-	[1] = {
-		.start	= SRAMC_BASE,
-		.end	= SRAMC_BASE+1024,
-		.flags	= IORESOURCE_MEM,
-	},
-	[2] = {
-		.start	= PIO_BASE,
-		.end	= PIO_BASE+1024,
-		.flags	= IORESOURCE_MEM,
-	},
-	[3] = {
-		.start	= CCM_BASE,
-		.end	= CCM_BASE+1024,
-		.flags	= IORESOURCE_MEM,
-	},
-	[4] = {
-		.start	= SW_INT_IRQNO_EMAC,
-		.end	= SW_INT_IRQNO_EMAC,
-		.flags	= IORESOURCE_IRQ,
-	}
-};
-
-static struct wemac_plat_data wemac_platdata = {
-};
-
-static struct platform_device wemac_device = {
-	.name		= "wemac",
-	.id		= 0,
-	.num_resources	= ARRAY_SIZE(wemac_resources),
-	.resource	= wemac_resources,
-	.dev		= {
-		.platform_data = &wemac_platdata,
-	}
-
-};
 
 static struct platform_driver wemac_driver = {
 	.driver	= {
@@ -2038,33 +1973,15 @@ static struct platform_driver wemac_driver = {
 
 static int __init wemac_init(void)
 {
-	int emac_used = 0;
-
-	if (SCRIPT_PARSER_OK != script_parser_fetch("emac_para", "emac_used", &emac_used, 1))
-		printk(KERN_WARNING "emac_init fetch emac using configuration failed\n");
-
-	if (!emac_used) {
-		printk(KERN_INFO "emac driver is disabled\n");
-		return 0;
-	}
 
 	printk(KERN_INFO "%s Ethernet Driver, V%s in file:%s\n", CARDNAME, DRV_VERSION, __FILE__);
 
-	platform_device_register(&wemac_device);
 	return platform_driver_register(&wemac_driver);
 }
 
 static void __exit wemac_cleanup(void)
 {
 	int emac_used = 0;
-
-	if (SCRIPT_PARSER_OK != script_parser_fetch("emac_para", "emac_used", &emac_used, 1))
-		printk(KERN_WARNING "emac_init fetch emac using configuration failed\n");
-
-	if (!emac_used) {
-		printk(KERN_INFO "emac driver is disabled\n");
-		return;
-	}
 
 	platform_driver_unregister(&wemac_driver);
 }
