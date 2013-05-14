@@ -4,5 +4,6 @@ obj-y += core.o
 obj-y += clocksrc.o
 obj-y += devices.o
 obj-y += dma.o
+obj-y += gpio.o
 obj-$(CONFIG_CPU_FREQ) += cpu-freq/
 obj-$(CONFIG_PM) += pm/

@@ -38,9 +38,10 @@
 #include <asm/pmu.h>
 #include <mach/hardware.h>
 #include <plat/i2c.h>
+#include <plat/gpio.h>
 
 /* Register base define */
-#define UART_BASE       (0x01C28000)
+#define UART_BASE       SW_PA_UART0_IO_BASE 
 #define UART_BASE_OS    (0x400)
 #define UARTx_BASE(x)   (UART_BASE + (x) * UART_BASE_OS)
 
