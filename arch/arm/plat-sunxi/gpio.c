@@ -39,3 +39,8 @@ int sunxi_gpio_get_func(int bank, int pin)
 {
 	return 0;
 }
+
+int gpio_init(void)
+{
+}
+arch_initcall(gpio_init);

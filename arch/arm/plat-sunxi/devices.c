@@ -149,6 +149,29 @@ static struct platform_device wemac_device = {
 	}
 };
 
+/* ahci */
+static struct resource sw_ahci_resources[] = {
+	[0] = {
+		.start		= SW_PA_SATA_IO_BASE,
+		.end		= SW_PA_SATA_IO_BASE + 0x1000 - 1,
+		.flags		= IORESOURCE_MEM,
+	},
+
+	[1] = {
+    	.start	= SW_INT_IRQNO_SATA,
+    	.end	= SW_INT_IRQNO_SATA,
+    	.flags	= IORESOURCE_IRQ,
+    },
+};
+
+struct platform_device sw_ahci_device  = {
+	.name		= "sw_ahci",
+	.id			= 0,
+	.dev 		= {
+	},
+	.num_resources	= ARRAY_SIZE(sw_ahci_resources),
+	.resource		= sw_ahci_resources,
+};
 
 /* spdif */
 static struct platform_device sun4i_spdif_device = {
@@ -160,6 +183,7 @@ static struct platform_device sw_pdev_dmac = {
 	.name = "sw_dmac",
 };
 
+/* nand */
 static struct resource sw_res_nand =
 {
 	.start = SW_PA_NANDFLASHC_IO_BASE,
@@ -293,6 +317,7 @@ static struct platform_device *sw_pdevs[] __initdata = {
 	&sw_uart0_dev,
 	&sw_pdev_dmac,
 	&sw_pdev_nand,
+    &sw_ahci_device,
 	&awmmc0_device,
     &wemac_device,
 	&sunxi_twi0_device,
