@@ -21,17 +21,17 @@ void sunxi_gpio_set_func(int bank, int pin, int func)
 	__u32 offset;
 	struct sunxi_gpio *pio;
 
-	pio = (struct sunxi_gpio*)(SW_VA_PORTC_IO_BASE+bank*sizeof(struct sunxi_gpio));
-
 	if(bank>8 || bank<0) return;
 	if(pin>31 || pin<0) return;
 
+	pio = (struct sunxi_gpio*)(SW_VA_PORTC_IO_BASE+bank*sizeof(struct sunxi_gpio));
 	index = GPIO_CFG_INDEX(pin);
 	offset = GPIO_CFG_OFFSET(pin);
 
 	cfg = readl(&pio->cfg[0] + index);
 	cfg &= ~(0xf << offset);
-	writel(cfg, &pio->cfg[0] + offset);
+	cfg |= func<<offset;
+	writel(cfg, &pio->cfg[0] + index);
 
 }
 
@@ -42,7 +42,7 @@ void sunxi_gpio_set_value(int bank, int pin, int value)
 
 	pio = (struct sunxi_gpio*)(SW_VA_PORTC_IO_BASE+bank*sizeof(struct sunxi_gpio));
 	if(value)
-		data = readl(&pio->dat) | 1<<pin;
+		data = readl(&pio->dat) | (1<<pin);
 	else
 		data = readl(&pio->dat) & ~(1<<pin);
 	writel(data, &pio->dat);
@@ -54,16 +54,25 @@ int sunxi_gpio_get_func(int bank, int pin)
 	return 0;
 }
 
+void dump_gpio(void)
+{
+	int i;
+	__u32 *p = SW_VA_PORTC_IO_BASE;
+	printk("\n");
+	for(i=0;i<18;i++)
+	{
+		printk("%08X ", p[i]);
+		if((i+1)%4 == 0) printk("\n");
+	}
+	printk("\n");
+}
+
 int gpio_init(void)
 {
 	printk("GPIO Initializing.\n");
-	sunxi_gpio_set_func(SUNXI_GPIO_F,  2, SUNXI_GPIO_INPUT);
-	sunxi_gpio_set_func(SUNXI_GPIO_F,  4, SUNXI_GPIO_INPUT);
 	sunxi_gpio_set_func(SUNXI_GPIO_B, 22, SUN4I_GPB22_UART0_TX);
 	sunxi_gpio_set_func(SUNXI_GPIO_B, 23, SUN4I_GPB23_UART0_RX);
-
 #ifdef CONFIG_SW_SATA_AHCI_PLATFORM
-	/* Enable SATA power supply */
 	sunxi_gpio_set_func(SUNXI_GPIO_B, 8, SUNXI_GPIO_OUTPUT);
 	sunxi_gpio_set_value(SUNXI_GPIO_B, 8, 1);
 #endif
