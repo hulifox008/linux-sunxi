@@ -36,7 +36,7 @@
 fb_info_t g_fbi;
 static DEFINE_MUTEX(g_fbi_mutex);
 
-static int screen0_output_type = -1;
+static int screen0_output_type = 4;
 module_param(screen0_output_type, int, 0444);
 MODULE_PARM_DESC(screen0_output_type, "0:none; 1:lcd; 2:tv; 3:hdmi; 4:vga");
 
@@ -160,31 +160,18 @@ static __s32
 parser_disp_init_para(__disp_init_t *init_para)
 {
 	int value;
-	int i;
+    int i;
 
 	memset(init_para, 0, sizeof(__disp_init_t));
 
-	if (script_parser_fetch("disp_init", "disp_init_enable",
-				&value, 1) < 0) {
-		__wrn("fetch script data disp_init.disp_init_enable fail\n");
-		return -1;
-	}
-	init_para->b_init = value;
+	init_para->b_init = 1;
 
-	if (script_parser_fetch("disp_init", "disp_mode", &value, 1) < 0) {
-		__wrn("fetch script data disp_init.disp_mode fail\n");
-		return -1;
-	}
-	init_para->disp_mode = value;
+	init_para->disp_mode = 1;
 
 	/* screen0 */
+    value = 4; /* VGA */
 	if (screen0_output_type != -1)
 		value = screen0_output_type;
-	else if (script_parser_fetch("disp_init", "screen0_output_type",
-				&value, 1) < 0) {
-		__wrn("fetch script data disp_init.screen0_output_type fail\n");
-		return -1;
-	}
 
 	if (value == 0) {
 		init_para->output_type[0] = DISP_OUTPUT_TYPE_NONE;
@@ -202,11 +189,7 @@ parser_disp_init_para(__disp_init_t *init_para)
 		return -1;
 	}
 
-	if (script_parser_fetch("disp_init", "screen0_output_mode",
-				&value, 1) < 0) {
-		__wrn("fetch script data disp_init.screen0_output_mode fail\n");
-		return -1;
-	}
+    value = 5; /* mode 800x600 */
 	if (init_para->output_type[0] == DISP_OUTPUT_TYPE_TV ||
 	    init_para->output_type[0] == DISP_OUTPUT_TYPE_HDMI) {
 		if (screen0_output_mode) {
@@ -229,13 +212,9 @@ parser_disp_init_para(__disp_init_t *init_para)
 	}
 
 	/* screen1 */
+    value = 4; /* VGA */
 	if (screen1_output_type != -1)
 		value = screen1_output_type;
-	else if (script_parser_fetch("disp_init", "screen1_output_type",
-				&value, 1) < 0) {
-		__wrn("fetch script data disp_init.screen1_output_type fail\n");
-		return -1;
-	}
 
 	if (value == 0) {
 		init_para->output_type[1] = DISP_OUTPUT_TYPE_NONE;
@@ -253,11 +232,7 @@ parser_disp_init_para(__disp_init_t *init_para)
 		return -1;
 	}
 
-	if (script_parser_fetch("disp_init", "screen1_output_mode",
-				&value, 1) < 0) {
-		__wrn("fetch script data disp_init.screen1_output_mode fail\n");
-		return -1;
-	}
+    value = 5; /* 800x600 */
 
 	if (init_para->output_type[1] == DISP_OUTPUT_TYPE_TV ||
 	    init_para->output_type[1] == DISP_OUTPUT_TYPE_HDMI) {
@@ -281,62 +256,16 @@ parser_disp_init_para(__disp_init_t *init_para)
 	}
 
 	/* fb0 */
-	if (script_parser_fetch("disp_init", "fb0_framebuffer_num",
-				&value, 1) < 0) {
-		__wrn("fetch script data disp_init.fb0_framebuffer_num fail\n");
-		return -1;
-	}
-	init_para->buffer_num[0] = value;
-
-	if (script_parser_fetch("disp_init", "fb0_format", &value, 1) < 0) {
-		__wrn("fetch script data disp_init.fb0_format fail\n");
-		return -1;
-	}
-	init_para->format[0] = value;
-
-	if (script_parser_fetch("disp_init", "fb0_pixel_sequence",
-				&value, 1) < 0) {
-		__wrn("fetch script data disp_init.fb0_pixel_sequence fail\n");
-		return -1;
-	}
-	init_para->seq[0] = value;
-
-	if (script_parser_fetch
-	    ("disp_init", "fb0_scaler_mode_enable", &value, 1) < 0) {
-		__wrn("fetch script data disp_init.fb0_scaler_mode_enable "
-		      "fail\n");
-		return -1;
-	}
-	init_para->scaler_mode[0] = value;
+	init_para->buffer_num[0] = 2;
+	init_para->format[0] = 10;
+	init_para->seq[0] = 0;
+	init_para->scaler_mode[0] = 1;
 
 	/* fb1 */
-	if (script_parser_fetch("disp_init", "fb1_framebuffer_num",
-				&value, 1) < 0) {
-		__wrn("fetch script data disp_init.fb1_framebuffer_num fail\n");
-		return -1;
-	}
-	init_para->buffer_num[1] = value;
-
-	if (script_parser_fetch("disp_init", "fb1_format", &value, 1) < 0) {
-		__wrn("fetch script data disp_init.fb1_format fail\n");
-		return -1;
-	}
-	init_para->format[1] = value;
-
-	if (script_parser_fetch("disp_init", "fb1_pixel_sequence",
-				&value, 1) < 0) {
-		__wrn("fetch script data disp_init.fb1_pixel_sequence fail\n");
-		return -1;
-	}
-	init_para->seq[1] = value;
-
-	if (script_parser_fetch
-	    ("disp_init", "fb1_scaler_mode_enable", &value, 1) < 0) {
-		__wrn("fetch script data disp_init.fb1_scaler_mode_enable "
-		      "fail\n");
-		return -1;
-	}
-	init_para->scaler_mode[1] = value;
+	init_para->buffer_num[1] = 2;
+	init_para->format[1] = 10;
+	init_para->seq[1] = 0;
+	init_para->scaler_mode[1] = 1;
 
 	__inf("====display init para begin====\n");
 	__inf("b_init:%d\n", init_para->b_init);
