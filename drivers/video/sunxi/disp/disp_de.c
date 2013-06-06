@@ -226,16 +226,6 @@ __s32 BSP_disp_set_output_csc(__u32 sel, __disp_output_type_t type)
 		out_csc = DE_YUV_HDMI;
 #endif
 
-		ret =
-		    script_parser_fetch("disp_init", "screen0_out_color_range",
-					&value, 1);
-		if (ret < 0) {
-			DE_INF("fetch script data "
-			       "disp_init.screen0_out_color_range fail\n");
-		} else {
-			out_color_range = value;
-			DE_INF("screen0_out_color_range = %d\n", value);
-		}
 	} else if (type == DISP_OUTPUT_TYPE_TV) {
 		out_csc = DE_YUV_TV;
 	}
@@ -272,15 +262,6 @@ __s32 BSP_disp_set_output_csc(__u32 sel, __u32 out_type, __u32 drc_en)
 
 		out_color_range = DISP_COLOR_RANGE_16_255;
 
-		ret = script_parser_fetch("disp_init",
-					  "screen0_out_color_range", &value, 1);
-		if (ret < 0) {
-			DE_INF("fetch script data "
-			       "disp_init.screen0_out_color_range fail\n");
-		} else {
-			out_color_range = value;
-			DE_INF("screen0_out_color_range = %d\n", value);
-		}
 		out_csc = 0;
 	} else if (out_type == DISP_OUTPUT_TYPE_LCD) {
 		out_csc = 0;

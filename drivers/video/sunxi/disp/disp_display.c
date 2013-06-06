@@ -92,7 +92,7 @@ __s32 BSP_disp_init(__disp_bsp_init_para *para)
 #ifdef CONFIG_ARCH_SUN4I
 	Scaler_Init(1);
 	Image_init(1);
-	Disp_lcdc_init(1);
+/*	Disp_lcdc_init(1); */
 	Disp_TVEC_Init(1);
 #endif
 

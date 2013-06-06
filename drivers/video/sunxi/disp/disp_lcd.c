@@ -245,232 +245,52 @@ Lcd_Panel_Parameter_Check(__u32 sel)
 static __s32
 LCD_get_panel_para(__u32 sel, __panel_para_t *info)
 {
-	__s32 ret = 0;
 	char primary_key[20];
-	__s32 value = 0;
-	__u32 i = 0;
 
 	sprintf(primary_key, "lcd%d_para", sel);
 
 	memset(info, 0, sizeof(__panel_para_t));
 
-	ret = script_parser_fetch(primary_key, "lcd_x", &value, 1);
-	if (ret < 0) {
-		DE_WRN("fetch script data %s.lcd_x fail\n", primary_key);
-	} else {
-		info->lcd_x = value;
-		DE_INF("lcd_x = %d\n", value);
-	}
+    info->lcd_x = 800;
+	info->lcd_y = 480;
+	info->lcd_dclk_freq = 33;
+	info->lcd_pwm_not_used = 0;
+    info->lcd_pwm_ch = 0;
+	info->lcd_pwm_freq = 10000;
+	info->lcd_pwm_pol = 0;
+	info->lcd_if = 0;
+	info->lcd_hbp = 46;
+	info->lcd_ht = 1055;
+		info->lcd_vbp = 23;
+		info->lcd_vt = 1050;
+		info->lcd_hv_if = 0;
+		info->lcd_hv_smode = 0;
 
-	ret = script_parser_fetch(primary_key, "lcd_y", &value, 1);
-	if (ret < 0) {
-		DE_WRN("fetch script data %s.lcd_y fail\n", primary_key);
-	} else {
-		info->lcd_y = value;
-		DE_INF("lcd_y = %d\n", value);
-	}
+		info->lcd_hv_s888_if = 0;
 
-	ret = script_parser_fetch(primary_key, "lcd_dclk_freq", &value, 1);
-	if (ret < 0) {
-		DE_WRN("fetch script data %s.lcd_dclk_freq fail\n",
-		       primary_key);
-	} else {
-		info->lcd_dclk_freq = value;
-		DE_INF("lcd_dclk_freq = %d\n", value);
-	}
+		info->lcd_hv_syuv_if = 0;
 
-	ret = script_parser_fetch(primary_key, "lcd_pwm_not_used", &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data %s.lcd_pwm_not_used fail\n",
-		       primary_key);
-	} else {
-		info->lcd_pwm_not_used = value;
-		DE_INF("lcd_pwm_not_used = %d\n", value);
-	}
+		info->lcd_hv_vspw = 0;
 
-	ret = script_parser_fetch(primary_key, "lcd_pwm_ch", &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data %s.lcd_pwm_ch fail\n", primary_key);
-	} else {
-		info->lcd_pwm_ch = value;
-		DE_INF("lcd_pwm_ch = %d\n", value);
-	}
+		info->lcd_hv_hspw = 0;
 
-	ret = script_parser_fetch(primary_key, "lcd_pwm_freq", &value, 1);
-	if (ret < 0) {
-		DE_WRN("fetch script data %s.lcd_pwm_freq fail\n", primary_key);
-	} else {
-		info->lcd_pwm_freq = value;
-		DE_INF("lcd_pwm_freq = %d\n", value);
-	}
+		info->lcd_lvds_ch = 0;
 
-	ret = script_parser_fetch(primary_key, "lcd_pwm_pol", &value, 1);
-	if (ret < 0) {
-		DE_WRN("fetch script data %s.lcd_pwm_pol fail\n", primary_key);
-	} else {
-		info->lcd_pwm_pol = value;
-		DE_INF("lcd_pwm_pol = %d\n", value);
-	}
+		info->lcd_lvds_mode = 0;
 
-	ret = script_parser_fetch(primary_key, "lcd_if", &value, 1);
-	if (ret < 0) {
-		DE_WRN("fetch script data %s.lcd_if fail\n", primary_key);
-	} else {
-		info->lcd_if = value;
-		DE_INF("lcd_if = %d\n", value);
-	}
+		info->lcd_lvds_bitwidth = 0;
 
-	ret = script_parser_fetch(primary_key, "lcd_hbp", &value, 1);
-	if (ret < 0) {
-		DE_WRN("fetch script data %s.lcd_hbp fail\n", primary_key);
-	} else {
-		info->lcd_hbp = value;
-		DE_INF("lcd_hbp = %d\n", value);
-	}
+		info->lcd_lvds_io_cross = 0;
 
-	ret = script_parser_fetch(primary_key, "lcd_ht", &value, 1);
-	if (ret < 0) {
-		DE_WRN("fetch script data %s.lcd_ht fail\n", primary_key);
-	} else {
-		info->lcd_ht = value;
-		DE_INF("lcd_ht = %d\n", value);
-	}
+		info->lcd_cpu_if = 0;
 
-	ret = script_parser_fetch(primary_key, "lcd_vbp", &value, 1);
-	if (ret < 0) {
-		DE_WRN("fetch script data %s.lcd_vbp fail\n", primary_key);
-	} else {
-		info->lcd_vbp = value;
-		DE_INF("lcd_vbp = %d\n", value);
-	}
+		info->lcd_frm = 0;
 
-	ret = script_parser_fetch(primary_key, "lcd_vt", &value, 1);
-	if (ret < 0) {
-		DE_WRN("fetch script data %s.lcd_vt fail\n", primary_key);
-	} else {
-		info->lcd_vt = value;
-		DE_INF("lcd_vt = %d\n", value);
-	}
+		info->lcd_io_cfg0 = 0x10000000;
 
-	ret = script_parser_fetch(primary_key, "lcd_hv_if", &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data %s.lcd_hv_if fail\n", primary_key);
-	} else {
-		info->lcd_hv_if = value;
-		DE_INF("lcd_hv_if = %d\n", value);
-	}
+		info->lcd_gamma_correction_en = 0;
 
-	ret = script_parser_fetch(primary_key, "lcd_hv_smode", &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data %s.lcd_hv_smode fail\n", primary_key);
-	} else {
-		info->lcd_hv_smode = value;
-		DE_INF("lcd_hv_smode = %d\n", value);
-	}
-
-	ret = script_parser_fetch(primary_key, "lcd_hv_s888_if", &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data %s.lcd_hv_s888_if fail\n",
-		       primary_key);
-	} else {
-		info->lcd_hv_s888_if = value;
-		DE_INF("lcd_hv_s888_if = %d\n", value);
-	}
-
-	ret = script_parser_fetch(primary_key, "lcd_hv_syuv_if", &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data %s.lcd_hv_syuv_if fail\n",
-		       primary_key);
-	} else {
-		info->lcd_hv_syuv_if = value;
-		DE_INF("lcd_hv_syuv_if = %d\n", value);
-	}
-
-	ret = script_parser_fetch(primary_key, "lcd_hv_vspw", &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data %s.lcd_hv_vspw fail\n", primary_key);
-	} else {
-		info->lcd_hv_vspw = value;
-		DE_INF("lcd_hv_vspw = %d\n", value);
-	}
-
-	ret = script_parser_fetch(primary_key, "lcd_hv_hspw", &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data %s.lcd_hv_hspw fail\n", primary_key);
-	} else {
-		info->lcd_hv_hspw = value;
-		DE_INF("lcd_hv_hspw = %d\n", value);
-	}
-
-	ret = script_parser_fetch(primary_key, "lcd_lvds_ch", &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data %s.lcd_lvds_ch fail\n", primary_key);
-	} else {
-		info->lcd_lvds_ch = value;
-		DE_INF("lcd_lvds_ch = %d\n", value);
-	}
-
-	ret = script_parser_fetch(primary_key, "lcd_lvds_mode", &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data %s.lcd_lvds_mode fail\n",
-		       primary_key);
-	} else {
-		info->lcd_lvds_mode = value;
-		DE_INF("lcd_lvds_mode = %d\n", value);
-	}
-
-	ret = script_parser_fetch(primary_key, "lcd_lvds_bitwidth", &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data %s.lcd_lvds_bitwidth fail\n",
-		       primary_key);
-	} else {
-		info->lcd_lvds_bitwidth = value;
-		DE_INF("lcd_lvds_bitwidth = %d\n", value);
-	}
-
-	ret = script_parser_fetch(primary_key, "lcd_lvds_io_cross", &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data %s.lcd_lvds_io_cross fail\n",
-		       primary_key);
-	} else {
-		info->lcd_lvds_io_cross = value;
-		DE_INF("lcd_lvds_io_cross = %d\n", value);
-	}
-
-	ret = script_parser_fetch(primary_key, "lcd_cpu_if", &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data %s.lcd_cpu_if fail\n", primary_key);
-	} else {
-		info->lcd_cpu_if = value;
-		DE_INF("lcd_cpu_if = %d\n", value);
-	}
-
-	ret = script_parser_fetch(primary_key, "lcd_frm", &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data %s.lcd_frm fail\n", primary_key);
-	} else {
-		info->lcd_frm = value;
-		DE_INF("lcd_frm = %d\n", value);
-	}
-
-	ret = script_parser_fetch(primary_key, "lcd_io_cfg0", &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data %s.lcd_io_cfg0 fail\n", primary_key);
-	} else {
-		info->lcd_io_cfg0 = value;
-		DE_INF("lcd_io_cfg0 = 0x%08x\n", value);
-	}
-
-	ret = script_parser_fetch(primary_key, "lcd_gamma_correction_en",
-				  &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data %s.lcd_gamma_correction_en fail\n",
-		       primary_key);
-	} else {
-		info->lcd_gamma_correction_en = value;
-		DE_INF("lcd_gamma_correction_en = %d\n", value);
-	}
-
+#if 0
 	if (info->lcd_gamma_correction_en) {
 		for (i = 0; i < 256; i++) {
 			char name[20];
@@ -489,157 +309,36 @@ LCD_get_panel_para(__u32 sel, __panel_para_t *info)
 			}
 		}
 	}
+#endif
 	return 0;
 }
 
 static void
 LCD_get_sys_config(__u32 sel, __disp_lcd_cfg_t *lcd_cfg)
 {
-	char io_name[28][20] = {
-		"lcdd0", "lcdd1", "lcdd2", "lcdd3", "lcdd4", "lcdd5",
-		"lcdd6", "lcdd7", "lcdd8", "lcdd9", "lcdd10", "lcdd11",
-		"lcdd12", "lcdd13", "lcdd14", "lcdd15", "lcdd16", "lcdd17",
-		"lcdd18", "lcdd19", "lcdd20", "lcdd21", "lcdd22", "lcdd23",
-		"lcdclk", "lcdde", "lcdhsync", "lcdvsync"};
-	user_gpio_set_t *gpio_info;
-	int value = 1;
-	char primary_key[20], sub_name[20];
 	int i = 0;
-	int ret;
-
-	sprintf(primary_key, "lcd%d_para", sel);
 
 	/* lcd_used */
-	ret = script_parser_fetch(primary_key, "lcd_used", &value, 1);
-	if (ret < 0) {
-		DE_WRN("%s.lcd_used not exit\n", primary_key);
-		lcd_cfg->lcd_used = 0;
-	} else {
-		DE_INF("%s.lcd_used = %d\n", primary_key, value);
-		lcd_cfg->lcd_used = value;
-	}
+	lcd_cfg->lcd_used = 1;
 
 	/* lcd_bl_en */
 	lcd_cfg->lcd_bl_en_used = 0;
-	value = 1;
-	ret = script_parser_fetch(primary_key, "lcd_bl_en_used", &value, 1);
-	if (value == 0) {
-		DE_INF("%s.lcd_bl_en is not used\n", primary_key);
-	} else {
-		gpio_info = &(lcd_cfg->lcd_bl_en);
-		ret = script_parser_fetch(primary_key, "lcd_bl_en",
-					  (int *)gpio_info,
-					  sizeof(user_gpio_set_t) /
-					  sizeof(int));
-		if (ret < 0) {
-			DE_INF("%s.lcd_bl_en not exist\n", primary_key);
-		} else {
-			DE_INF("%s.lcd_bl_en gpio_port=%d,gpio_port_num:%d, "
-			       "data:%d\n", primary_key, gpio_info->port,
-			       gpio_info->port_num, gpio_info->data);
-			lcd_cfg->lcd_bl_en_used = 1;
-		}
-	}
-
-	/* lcd_power */
-	lcd_cfg->lcd_power_used = 0;
-	value = 1;
-	ret = script_parser_fetch(primary_key, "lcd_power_used", &value, 1);
-	if (value == 0) {
-		DE_INF("%s.lcd_power is not used\n", primary_key);
-	} else {
-		gpio_info = &(lcd_cfg->lcd_power);
-		ret = script_parser_fetch(primary_key, "lcd_power",
-					  (int *)gpio_info,
-					  sizeof(user_gpio_set_t) /
-					  sizeof(int));
-		if (ret < 0) {
-			DE_INF("%s.lcd_power not exist\n", primary_key);
-		} else {
-			DE_INF("%s.lcd_power gpio_port=%d,gpio_port_num:%d, "
-			       "data:%d\n", primary_key, gpio_info->port,
-			       gpio_info->port_num, gpio_info->data);
-			lcd_cfg->lcd_power_used = 1;
-		}
-	}
+	lcd_cfg->lcd_power_used = 1;
 
 	/* lcd_pwm */
-	lcd_cfg->lcd_pwm_used = 0;
-	value = 1;
-	ret = script_parser_fetch(primary_key, "lcd_pwm_used", &value, 1);
-	if (value == 0) {
-		DE_INF("%s.lcd_pwm is not used\n", primary_key);
-	} else {
-		gpio_info = &(lcd_cfg->lcd_pwm);
-		ret = script_parser_fetch(primary_key, "lcd_pwm",
-					  (int *)gpio_info,
-					  sizeof(user_gpio_set_t) /
-					  sizeof(int));
-		if (ret < 0) {
-			DE_INF("%s.lcd_pwm not exist\n", primary_key);
-		} else {
-			DE_INF("%s.lcd_pwm gpio_port=%d,gpio_port_num:%d, "
-			       "data:%d\n", primary_key, gpio_info->port,
-			       gpio_info->port_num, gpio_info->data);
-			lcd_cfg->lcd_pwm_used = 1;
-		}
-	}
-
+	lcd_cfg->lcd_pwm_used = 1;
 	/* lcd_gpio */
 	for (i = 0; i < 4; i++) {
-		sprintf(sub_name, "lcd_gpio_%d", i);
-
-		gpio_info = &(lcd_cfg->lcd_gpio[i]);
-		ret = script_parser_fetch(primary_key, sub_name,
-					  (int *)gpio_info,
-					  sizeof(user_gpio_set_t) /
-					  sizeof(int));
-		if (ret < 0) {
-			DE_INF("%s.%s not exist\n", primary_key, sub_name);
-			lcd_cfg->lcd_gpio_used[i] = 0;
-		} else {
-			DE_INF("%s.%s gpio_port=%d,gpio_port_num:%d, "
-			       "mul_sel:%d\n", primary_key, sub_name,
-			       gpio_info->port, gpio_info->port_num,
-			       gpio_info->mul_sel);
-			lcd_cfg->lcd_gpio_used[i] = 1;
-		}
+		lcd_cfg->lcd_gpio_used[i] = 0;
 	}
 
 	/* lcd io */
 	for (i = 0; i < 28; i++) {
-		gpio_info = &(lcd_cfg->lcd_io[i]);
-		ret = script_parser_fetch(primary_key, io_name[i],
-					  (int *)gpio_info,
-					  sizeof(user_gpio_set_t) /
-					  sizeof(int));
-		if (ret < 0) {
-			DE_INF("%s.%s not exist\n", primary_key, io_name[i]);
 			lcd_cfg->lcd_io_used[i] = 0;
-		} else {
-			DE_INF("%s.%s gpio_port=%d,gpio_port_num:%d, "
-			       "mul_sel:%d\n", primary_key, io_name[i],
-			       gpio_info->port, gpio_info->port_num,
-			       gpio_info->mul_sel);
-			lcd_cfg->lcd_io_used[i] = 1;
-		}
 	}
 
 	/* init_brightness */
-	sprintf(primary_key, "disp_init");
-	sprintf(sub_name, "lcd%d_bright", sel);
-
-	ret = script_parser_fetch(primary_key, sub_name, &value, 1);
-	if (ret < 0) {
-		DE_INF("%s.%s not exit\n", primary_key, sub_name);
-		lcd_cfg->init_bright = 192;
-	} else {
-		DE_INF("%s.%s = %d\n", primary_key, sub_name, value);
-		if (value > 256)
-			value = 256;
-
-		lcd_cfg->init_bright = value;
-	}
+	lcd_cfg->init_bright = 0;
 }
 
 void LCD_delay_ms(__u32 ms)
