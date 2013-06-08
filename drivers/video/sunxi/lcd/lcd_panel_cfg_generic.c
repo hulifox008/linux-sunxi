@@ -39,6 +39,7 @@ static __s32 lcd_spi_module = -1;
 static void
 check_spi_used_value(void)
 {
+#if 0
 	if (SCRIPT_PARSER_OK !=
 	    script_parser_fetch("lcd_spi_para", "lcd_spi_used",
 				&lcd_spi_used, 1))
@@ -46,11 +47,13 @@ check_spi_used_value(void)
 
 	if (!lcd_spi_used)
 		__inf("LCD SPI doesn't use.\n");
+#endif
 }
 
 static void
 LCD_SPI_Init(__u32 sel)
 {
+#if 0
 	if (SCRIPT_PARSER_OK !=
 	    script_parser_fetch("lcd_spi_para", "lcd_spi_module",
 				&lcd_spi_module, 1)) {
@@ -85,11 +88,14 @@ ERR2:
 	gpio_release(lcd_spi_cs, 2);
 ERR1:
 	return;
+#endif
 }
 
 static void
 LCD_SPI_Write(__u32 sel)
 {
+return;
+#if 0
 	int i = 0, j = 0, offset = 0, bit_val = 0, ret = 0;
 	u16 data[9] = {		/* module 0 data */
 		0x0029,		/* reset */
@@ -170,11 +176,13 @@ LCD_SPI_Write(__u32 sel)
 		lcd_spi_dbg("%s Unknow lcd_spi_module\n", __func__);
 		break;
 	}
+#endif
 }
 
 static void
 LCD_SPI_Dinit(__u32 sel)
 {
+#if 0
 	lcd_spi_dbg("release GPIO src : lcd_spi_mosi\n");
 	if (lcd_spi_mosi)
 		gpio_release(lcd_spi_mosi, 2);
@@ -186,6 +194,7 @@ LCD_SPI_Dinit(__u32 sel)
 	lcd_spi_dbg("release GPIO src : lcd_spi_cs\n");
 	if (lcd_spi_cs)
 		gpio_release(lcd_spi_cs, 2);
+#endif
 }
 
 void LCD_power_on_generic(__u32 sel)

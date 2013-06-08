@@ -44,33 +44,16 @@ __s32 Disp_TVEC_Init(__u32 sel)
 	gdisp.screen[sel].dac_source[2] = DISP_TV_DAC_SRC_PR;
 	gdisp.screen[sel].dac_source[3] = DISP_TV_DAC_SRC_COMPOSITE;
 
-	ret = script_parser_fetch("tv_out_dac_para", "dac_used", &value, 1);
-	if (ret < 0) {
-		DE_INF("fetch script data tv_out_dac_para.dac_used fail\n");
-	} else {
-		DE_INF("tv_out_dac_para.dac_used=%d\n", value);
+    value = 0;
 
 		if (value != 0) {
 			__s32 i = 0;
 			char sub_key[20];
-
-			for (i = 0; i < 4; i++) {
-				sprintf(sub_key, "dac%d_src", i);
-
-				ret = script_parser_fetch("tv_out_dac_para",
-							  sub_key, &value, 1);
-				if (ret < 0) {
-					DE_INF("fetch script data "
-					       "tv_out_dac_para.%s fail\n",
-					       sub_key);
-				} else {
-					gdisp.screen[sel].dac_source[i] = value;
-					DE_INF("tv_out_dac_para.%s = %d\n",
-					       sub_key, value);
-				}
-			}
+            gdisp.screen[sel].dac_source[0] = 4;
+            gdisp.screen[sel].dac_source[1] = 5;
+            gdisp.screen[sel].dac_source[2] = 6;
+            gdisp.screen[sel].dac_source[3] = 4;
 		}
-	}
 
 	gdisp.screen[sel].tv_mode = DISP_TV_MOD_720P_50HZ;
 	return DIS_SUCCESS;
@@ -253,6 +236,7 @@ __s32 BSP_disp_tv_open(__u32 sel)
 #ifdef CONFIG_ARCH_SUN5I
 		Disp_de_flicker_enable(sel, TRUE);
 #endif
+#if 0
 		{
 			user_gpio_set_t gpio_info[1];
 			__hdle gpio_pa_shutdown;
@@ -279,7 +263,10 @@ __s32 BSP_disp_tv_open(__u32 sel)
 						 "audio_pa_ctrl");
 				}
 			}
+
 		}
+#endif
+
 		gdisp.screen[sel].b_out_interlace =
 			Disp_get_screen_scan_mode(tv_mod);
 		gdisp.screen[sel].status |= TV_ON;
@@ -322,6 +309,7 @@ __s32 BSP_disp_tv_close(__u32 sel)
 		}
 #endif /* CONFIG_ARCH_SUN5I */
 
+#if 0
 		{
 			user_gpio_set_t gpio_info[1];
 			__hdle gpio_pa_shutdown;
@@ -350,6 +338,7 @@ __s32 BSP_disp_tv_close(__u32 sel)
 			}
 		}
 
+#endif
 		gdisp.screen[sel].b_out_interlace = 0;
 		gdisp.screen[sel].status &= ~TV_ON;
 		gdisp.screen[sel].lcdc_status &= ~LCDC_TCON1_USED;
