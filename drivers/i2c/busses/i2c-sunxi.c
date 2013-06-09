@@ -360,6 +360,7 @@ static void aw_twi_disable_sys_clk(struct sunxi_i2c *i2c)
 
 static int aw_twi_request_gpio(struct sunxi_i2c *i2c)
 {
+#if 0
 	if(i2c->bus_num == 0) {
 		/* pb0-pb1 TWI0 SDA,SCK */
 		i2c_dbg("config i2c gpio with gpio_config api \n");
@@ -386,12 +387,13 @@ static int aw_twi_request_gpio(struct sunxi_i2c *i2c)
 			return -1;
 		}
 	}
-
+#endif
 	return 0;
 }
 
 static void aw_twi_release_gpio(struct sunxi_i2c *i2c)
 {
+#if 0
 	if(i2c->bus_num == 0) {
 		/* pb0-pb1 TWI0 SDA,SCK */
 		gpio_release(i2c->gpio_hdle, 0);
@@ -404,6 +406,7 @@ static void aw_twi_release_gpio(struct sunxi_i2c *i2c)
 		/* pb20-pb21 TWI2 scl,sda */
 		gpio_release(i2c->gpio_hdle, 0);
 	}
+#endif
 }
 
 
