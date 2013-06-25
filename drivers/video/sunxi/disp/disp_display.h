@@ -19,6 +19,7 @@
 
 #ifndef __DISP_DISPLAY_H__
 #define __DISP_DISPLAY_H__
+#define DEBUG
 
 #include "disp_display_i.h"
 #include "disp_layer.h"

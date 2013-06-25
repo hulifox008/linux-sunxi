@@ -20,6 +20,7 @@
 #ifndef  _DRV_HDMI_I_H_
 #define  _DRV_HDMI_I_H_
 
+#define DEBUG
 #include <linux/uaccess.h>
 #include <asm/memory.h>
 #include <linux/unistd.h>

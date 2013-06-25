@@ -333,6 +333,8 @@ __s32 OSAL_CCMU_MclkOnOff(__hdle hMclk, __s32 bOnOff)
 	struct clk *hModClk = (struct clk *)hMclk;
 	__s32 ret = 0;
 
+    printk("%p\n", hModClk);
+
 	__inf("OSAL_CCMU_MclkOnOff<%s,%d>\n", hModClk->clk->name, bOnOff);
 
 	if (bOnOff) {

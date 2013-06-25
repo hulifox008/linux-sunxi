@@ -20,6 +20,8 @@
 #ifndef __DEV_DISP_H__
 #define __DEV_DISP_H__
 
+#define DEBUG
+
 enum {
 	SUNXI_LCD,
 	SUNXI_HDMI

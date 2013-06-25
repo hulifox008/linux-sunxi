@@ -36,7 +36,7 @@
 fb_info_t g_fbi;
 static DEFINE_MUTEX(g_fbi_mutex);
 
-static int screen0_output_type = 4;
+static int screen0_output_type = 3;
 module_param(screen0_output_type, int, 0444);
 MODULE_PARM_DESC(screen0_output_type, "0:none; 1:lcd; 2:tv; 3:hdmi; 4:vga");
 
@@ -397,6 +397,8 @@ static int __init Fb_map_video_memory(__u32 fb_id, struct fb_info *info)
 	unsigned map_size = PAGE_ALIGN(info->fix.smem_len);
 	struct page *page;
 
+    __inf("fb_size %d\n", fb_size);
+
 #ifdef CONFIG_FB_SUNXI_RESERVED_MEM
 	if (fb_size)
 		goto use_reserved_mem;
@@ -416,6 +418,7 @@ static int __init Fb_map_video_memory(__u32 fb_id, struct fb_info *info)
 #ifdef CONFIG_FB_SUNXI_RESERVED_MEM
 use_reserved_mem:
 	g_fbi.malloc_screen_base[fb_id] = disp_malloc(info->fix.smem_len);
+    printk("g_fbi.malloc_screen_base[%d] = %p  smem_len:%lu\n", fb_id, g_fbi.malloc_screen_base[fb_id], info->fix.smem_len);
 	if (g_fbi.malloc_screen_base[fb_id] == NULL)
 		return -ENOMEM;
 	info->fix.smem_start = (unsigned long)
@@ -1402,6 +1405,7 @@ __s32 Display_Fb_Request(__u32 fb_id, __disp_fb_create_para_t * fb_para)
 		(fb_para->width * info->var.bits_per_pixel) >> 3;
 	info->fix.smem_len = PAGE_ALIGN(
 		info->fix.line_length * fb_para->height * fb_para->buffer_num);
+    __inf("fb info line_length %d   height %d  buffer_num %d\n", info->fix.line_length, fb_para->height, fb_para->buffer_num);
 	Fb_map_video_memory(fb_id, info);
 
 	for (sel = 0; sel < 2; sel++) {
@@ -1588,6 +1592,8 @@ void hdmi_edid_received(unsigned char *edid, int block_count)
 	__u32 sel = 0;
 	__u32 block = 0;
 	LIST_HEAD(old_modelist);
+
+    printk("hdmi_edid_received( block_count=%d)\n", block_count);
 
 	mutex_lock(&g_fbi_mutex);
 	for (sel = 0; sel < 2; sel++) {
@@ -1784,7 +1790,7 @@ __s32 Fb_Init(__u32 from)
 	if (g_fbi.disp_init.b_init) {
 		__u32 fb_num = 0, sel = 0;
 
-		for (sel = 0; sel < 2; sel++) {
+		for (sel = 0; sel < 1; sel++) {
 			if (((sel == 0) && (g_fbi.disp_init.disp_mode !=
 					    DISP_INIT_MODE_SCREEN1)) ||
 			    ((sel == 1) && (g_fbi.disp_init.disp_mode !=
@@ -1832,6 +1838,7 @@ __s32 Fb_Init(__u32 from)
 			fb_para.buffer_num = g_fbi.disp_init.buffer_num[i];
 			fb_para.width = BSP_disp_get_screen_width(screen_id);
 			fb_para.height = BSP_disp_get_screen_height(screen_id);
+            __inf("fb_para.width %d   fb_para.height %d\n", fb_para.width, fb_para.height);
 			fb_para.output_width =
 				BSP_disp_get_screen_width(screen_id);
 			fb_para.output_height =

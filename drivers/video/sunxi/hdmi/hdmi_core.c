@@ -120,7 +120,7 @@ __s32 hdmi_main_task_loop(void)
 		hdmi_state = HDMI_State_Wait_Hpd;
 	}
 
-	hdmi_cec_task_loop();
+//	hdmi_cec_task_loop();
 
 	/* ? where did all the breaks run off to? --libv */
 	switch (hdmi_state) {

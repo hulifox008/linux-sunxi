@@ -20,6 +20,8 @@
 #ifndef __DEV_DISPLAY_H__
 #define __DEV_DISPLAY_H__
 
+#define DEBUG
+
 #include "drv_hdmi_i.h"
 
 typedef struct {

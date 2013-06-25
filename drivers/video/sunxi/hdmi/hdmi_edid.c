@@ -423,16 +423,28 @@ __s32 ParseEDID(void)
 	}
 
 	if (probe_ddc_edid(&sunxi_hdmi_i2c_adapter, 0, EDID_Buf))
+    {
+        printk("probe_ddc_edid() failed\n");
 		goto ret;
+    }
 
 	if (EDID_CheckSum(0, EDID_Buf) != 0)
+    {
+        printk("EDID_CheckSum() failed\n");
 		goto ret;
+    }
 
 	if (EDID_Header_Check(EDID_Buf) != 0)
+    {
+        printk("EDID_Header_Check() failed!\n");
 		goto ret;
+    }
 
 	if (EDID_Version_Check(EDID_Buf) != 0)
+    {
+        printk("EDID_Version_Check() failed!\n");
 		goto ret;
+    }
 
 	Parse_DTD_Block(EDID_Buf + 0x36);
 
@@ -451,6 +463,7 @@ __s32 ParseEDID(void)
 		}
 	}
 
+    printk("BlockCount %d\n", BlockCount);
 	hdmi_edid_received(EDID_Buf, BlockCount);
 
 	for (i = 1; i < BlockCount; i++) {

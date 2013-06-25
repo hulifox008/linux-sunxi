@@ -358,6 +358,8 @@ __s32 lcdc_clk_init(__u32 sel)
 		h_lcd0ch1mclk1 = OSAL_CCMU_OpenMclk(AW_MOD_CLK_LCD0CH1_S1);
 		h_lcd0ch1mclk2 = OSAL_CCMU_OpenMclk(AW_MOD_CLK_LCD0CH1_S2);
 
+        //printk("h_lcd0ch0mclk0 %p, h_lcd0ch1mclk1 %p, h_lcd0ch1mclk2 %p\n", h_lcd0ch0mclk0, h_lcd0ch1mclk1, h_lcd0ch1mclk2);
+
 #ifdef CONFIG_ARCH_SUN4I
 		/* Default to Video Pll0 */
 		OSAL_CCMU_SetMclkSrc(h_lcd0ch0mclk0, AW_SYS_CLK_PLL7);
@@ -462,6 +464,7 @@ __s32 lcdc_clk_exit(__u32 sel)
 
 __s32 lcdc_clk_on(__u32 sel)
 {
+    printk("sel %d, h_lcd0ch0mclk0 %p, h_lcd0ch0mclk1 %p, h_lcd0ch1mclk2 %p\n", sel, h_lcd0ch0mclk0, h_lcd0ch1mclk1, h_lcd0ch1mclk2);
 	if (sel == 0) {
 		OSAL_CCMU_MclkOnOff(h_lcd0ch0mclk0, CLK_ON);
 		OSAL_CCMU_MclkOnOff(h_lcd0ch1mclk1, CLK_ON);

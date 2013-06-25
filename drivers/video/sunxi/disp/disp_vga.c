@@ -43,6 +43,7 @@ VGA_Exit(void)
 
 __s32 BSP_disp_vga_open(__u32 sel)
 {
+    printk("BSP_disp_vga_open() sel:%d, status gdisp.screen[sel].status %08x\n", sel, gdisp.screen[sel].status);
 	if (!(gdisp.screen[sel].status & VGA_ON)) {
 		__disp_vga_mode_t vga_mode;
 #ifdef CONFIG_ARCH_SUN4I

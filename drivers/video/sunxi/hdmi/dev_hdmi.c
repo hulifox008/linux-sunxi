@@ -145,6 +145,7 @@ hdmi_module_init(void)
 {
 	int ret = 0, err;
 
+    printk("hdmi_module_init\n");
 	__inf("hdmi_module_init\n");
 
 	alloc_chrdev_region(&devid, 0, 1, "hdmi");
