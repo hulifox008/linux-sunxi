@@ -72,8 +72,10 @@ int gpio_init(void)
 	printk("GPIO Initializing.\n");
 	sunxi_gpio_set_func(SUNXI_GPIO_B, 22, SUN4I_GPB22_UART0_TX);
 	sunxi_gpio_set_func(SUNXI_GPIO_B, 23, SUN4I_GPB23_UART0_RX);
+
 #ifdef CONFIG_SW_SATA_AHCI_PLATFORM
-	sunxi_gpio_set_func(SUNXI_GPIO_B, 8, SUNXI_GPIO_OUTPUT);
+	/* Turn on SATA power */
+    sunxi_gpio_set_func(SUNXI_GPIO_B, 8, SUNXI_GPIO_OUTPUT);
 	sunxi_gpio_set_value(SUNXI_GPIO_B, 8, 1);
 #endif
 	return 0;
